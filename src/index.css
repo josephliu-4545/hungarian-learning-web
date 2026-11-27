@@ -194,3 +194,6 @@ h2 { margin-bottom: .45rem; font-size: clamp(1.35rem, 2.2vw, 1.75rem); font-weig
   .flashcard > strong { overflow-wrap: anywhere; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; } }
+
+/* Keep additional study controls comfortably wrapped on narrow displays. */
+.study-controls { flex-wrap: wrap; }

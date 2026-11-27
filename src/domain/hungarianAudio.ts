@@ -1,6 +1,8 @@
 import type { VocabularyItem } from '../types'
 import { approvedAudio } from '../data/audioManifest'
 
+export type PlaybackStatus = 'idle' | 'loading' | 'playing' | 'played' | 'unavailable'
+
 let generation = 0
 let activeAudio: HTMLAudioElement | undefined
 let cancelVoiceWait: (() => void) | undefined
@@ -18,14 +20,14 @@ export function stopHungarian() {
   if (typeof window !== 'undefined' && 'speechSynthesis' in window) window.speechSynthesis.cancel()
 }
 
-export function playHungarian(item: VocabularyItem, rate: number, onUnavailable: (unavailable: boolean) => void) {
+export function playHungarian(item: VocabularyItem, rate: number, onStatus: (status: PlaybackStatus) => void) {
   stopHungarian()
   const token = generation
   const current = () => token === generation
-  onUnavailable(false)
+  onStatus('loading')
   const fallback = () => {
     if (!current()) return
-    if (!('speechSynthesis' in window) || typeof SpeechSynthesisUtterance === 'undefined') { onUnavailable(true); return }
+    if (!('speechSynthesis' in window) || typeof SpeechSynthesisUtterance === 'undefined') { onStatus('unavailable'); return }
     const synth = window.speechSynthesis
     const speak = () => {
       if (!current()) return true
@@ -35,15 +37,16 @@ export function playHungarian(item: VocabularyItem, rate: number, onUnavailable:
       utterance.lang = voice.lang
       utterance.voice = voice
       utterance.rate = rate
-      utterance.onerror = () => { if (current()) onUnavailable(true) }
-      try { synth.speak(utterance) } catch { if (current()) onUnavailable(true) }
+      utterance.onstart = () => { if (current()) onStatus('playing') }
+      utterance.onend = () => { if (current()) onStatus('played') }
+      utterance.onerror = () => { if (current()) onStatus('unavailable') }
+      try { synth.speak(utterance) } catch { if (current()) onStatus('unavailable') }
       return true
     }
     if (speak()) return
-    if (synth.getVoices().length) { onUnavailable(true); return }
     const clear = () => { window.clearTimeout(timer); synth.removeEventListener('voiceschanged', retry); cancelVoiceWait = undefined }
     const retry = () => { if (speak()) clear() }
-    const timer = window.setTimeout(() => { clear(); if (!speak() && current()) onUnavailable(true) }, 900)
+    const timer = window.setTimeout(() => { clear(); if (!speak() && current()) onStatus('unavailable') }, 900)
     cancelVoiceWait = clear
     synth.addEventListener('voiceschanged', retry)
   }
@@ -54,7 +57,9 @@ export function playHungarian(item: VocabularyItem, rate: number, onUnavailable:
     audio.playbackRate = rate
     let failed = false
     const recover = () => { if (!current() || failed) return; failed = true; audio.pause(); activeAudio = undefined; fallback() }
+    audio.addEventListener('playing', () => { if (current() && !failed) onStatus('playing') })
+    audio.addEventListener('ended', () => { if (current() && !failed) onStatus('played') })
     audio.addEventListener('error', recover, { once: true })
-    audio.play().catch(recover)
+    try { audio.play().catch(recover) } catch { recover() }
   } else fallback()
 }
