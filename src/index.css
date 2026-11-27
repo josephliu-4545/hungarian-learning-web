@@ -194,3 +194,113 @@ h2 { margin-bottom: .45rem; font-size: clamp(1.35rem, 2.2vw, 1.75rem); font-weig
   .flashcard > strong { overflow-wrap: anywhere; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; } }
+
+/* Keep additional study controls comfortably wrapped on narrow displays. */
+.study-controls { flex-wrap: wrap; }
+
+.voice-control { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: .5rem .75rem; margin: .75rem auto; color: var(--text, #29352e); font-size: .875rem; }
+.voice-control select { font: inherit; color: #29352e; border: 1px solid #b7c3b8; border-radius: .65rem; padding: .5rem .75rem; background: #fffdf9; }
+.voice-control select:focus-visible { outline: 2px solid #42634e; outline-offset: 2px; }
+.voice-control small { flex-basis: 100%; text-align: center; color: #53635a; }
+
+/* Prioritize the card and its controls over settings on short screens. */
+.flashcard-stage .voice-control { margin: .6rem auto 0; }
+.flashcard > strong { overflow-wrap: anywhere; max-width: 100%; }
+@media (max-height: 850px) {
+  .learn-shell .text-button { margin-bottom: .65rem; }
+  .learn-heading { margin-bottom: .85rem; }
+  .mode-tabs { margin-bottom: .85rem; }
+  .flashcard { min-height: clamp(12rem, 36vh, 19rem); padding: 2rem 1.25rem 1.25rem; }
+  .flashcard > strong { font-size: clamp(1.75rem, 5vw, 3.25rem); margin: .8rem 0; }
+  .learn-shell .study-controls { margin-top: .65rem; }
+}
+
+.practice-library { max-width: 44rem; margin: auto; }
+.practice-grid { display:grid; gap:.75rem; grid-template-columns:repeat(auto-fit,minmax(min(100%,16rem),1fr)); }
+.practice-tile { grid-template-columns:1fr; min-height:7.25rem; }
+.practice-intro { color:var(--text-soft); }
+.practice-lesson { display:grid; gap:1rem; }
+.practice-lesson > p { margin:0; color:var(--text); }
+.practice-lesson > .button { justify-self:start; }
+.practice-table-wrap { overflow:auto; max-height:22rem; border:1px solid var(--border); border-radius:.7rem; }
+.practice-table { width:100%; border-collapse:collapse; font-size:.82rem; text-align:left; }
+.practice-table th,.practice-table td { padding:.65rem .75rem; border-bottom:1px solid var(--border); }
+.practice-table th { position:sticky; top:0; background:var(--sage-soft); }
+.practice-table-wrap small { display:block; padding:.6rem; color:var(--text-soft); }
+.practice-question .practice-prompt { overflow-wrap:anywhere; margin:1rem 0; }
+.practice-question form { display:grid; gap:.7rem; text-align:left; }
+.practice-question form input { width:100%; min-height:3rem; padding:.75rem; border:1px solid var(--border); border-radius:.75rem; background:white; }
+.accent-keys { display:flex; gap:.3rem; flex-wrap:wrap; }
+.accent-keys .button { min-height:2.35rem; padding:.3rem .65rem; }
+.practice-feedback { margin-top:1rem; border-radius:var(--radius); padding:1rem; text-align:left; }
+.practice-feedback p { margin:.4rem 0; }
+.practice-clock { display:block; width:8rem; margin:.75rem auto; }
+.practice-next { margin-top:1rem; }
+
+/* Real mobile viewport, readable controls, and safe-area navigation. */
+@media (max-width: 767px) {
+  body { min-width: 0; }
+  .app-shell { padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px)); }
+  .mobile-nav { padding-bottom: env(safe-area-inset-bottom, 0px); }
+  .header-inner { height: 3.75rem; }
+  .page-container {
+    width: auto;
+    margin-inline: max(1rem, env(safe-area-inset-left, 0px)) max(1rem, env(safe-area-inset-right, 0px));
+    padding: 1.35rem 0 1.5rem;
+  }
+  .page-stack { gap: 1.8rem; }
+  .welcome-panel { gap: 1rem; padding-top: .35rem; }
+  .learn-heading > div, .page-stack > *, .practice-library, .practice-lesson > *, .practice-question form, .study-panel, .status-card > div { min-width: 0; }
+  .learn-heading h1 { overflow-wrap: anywhere; }
+  .answer-grid button { gap: .5rem; overflow-wrap: anywhere; }
+  .answer-grid button svg { flex-shrink: 0; }
+  .feedback > div, .review-list li > * { min-width: 0; overflow-wrap: anywhere; }
+  .review-list li { gap: .7rem; }
+  .practice-table-wrap { min-width: 0; max-width: 100%; }
+  .voice-control select, .practice-question form input, .spelling-panel input { font-size: 1rem; }
+  .voice-control select { min-height: 2.75rem; max-width: 100%; }
+  .accent-keys .button { min-width: 2.75rem; min-height: 2.75rem; }
+  .text-button { min-height: 2.75rem; }
+}
+@media (max-width: 520px) {
+  .preview-banner { font-size: .7rem; line-height: 1.4; padding: .5rem .8rem; }
+  .welcome-panel h1 { font-size: 2rem; }
+  .continue-card strong { white-space: normal; overflow-wrap: anywhere; }
+  .mode-tabs { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .mode-tabs button { min-width: 0; min-height: 2.75rem; padding-inline: .35rem; }
+  .mode-tabs button:last-child:nth-child(5) { grid-column: span 2; }
+  .mode-tabs button:last-child:nth-child(4) { grid-column: 1 / -1; }
+  .flashcard { min-height: 14rem; padding: 2.6rem 1rem 1.25rem; border-radius: 1.2rem; }
+  .flashcard > strong { font-size: clamp(1.8rem, 7vw, 2.5rem); }
+  .study-controls { gap: .45rem; }
+  .study-panel { padding: 1rem; border-radius: 1rem; }
+  .practice-grid { grid-template-columns: minmax(0, 1fr); }
+  .accuracy-list > div { grid-template-columns: minmax(3.5rem, 4.5rem) minmax(0, 1fr) auto; gap: .4rem; }
+  .accuracy-list strong { min-width: 0; }
+  .backup-actions .button { flex: 1 1 100%; }
+}
+
+.site-footer { width: min(1120px, calc(100% - 2rem)); margin: 0 auto; padding: 0 0 1.5rem; display:flex; flex-wrap:wrap; justify-content:center; gap:.5rem 1rem; color:var(--text-soft); font-size:.78rem; text-align:center; }
+.site-footer a { color:var(--primary); text-decoration:underline; text-underline-offset:.18em; }
+
+.account-strip { display:flex; flex-wrap:wrap; align-items:center; gap:.6rem; padding:.85rem 1rem; margin-bottom:1.25rem; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); }
+.account-strip > div:first-child { flex:1 1 12rem; min-width:0; overflow-wrap:anywhere; }
+.account-strip strong,.account-strip small { display:block; }
+.account-strip small { color:var(--text-soft); }
+.account-strip > .account-form,.account-strip > p { flex:1 1 100%; }
+.account-form { max-width:30rem; margin:1rem auto; }
+.account-form form { display:grid; gap:.7rem; margin:1rem 0; }
+.account-form label { display:grid; gap:.3rem; font-size:.9rem; }
+.account-form input { min-height:2.75rem; width:100%; padding:.6rem; border:1px solid var(--border); border-radius:.65rem; font-size:1rem; }
+.account-form a { color:var(--primary); text-decoration:underline; }
+
+.account-form-wrap { flex:1 1 100%; min-width:0; border-top:1px solid var(--border); margin-top:.45rem; }
+.account-form-wrap .account-form { width:min(100%, 27rem); margin:1.1rem auto .4rem; box-shadow:none; }
+.account-form h2 { margin-bottom:1rem; }
+.account-form .password-toggle { justify-self:end; min-height:2rem; margin:0; }
+.account-message { background:#edf3eb; color:#34513f; padding:.8rem; border-radius:.65rem; margin-top:1rem; }
+.account-settings { flex:1 1 100%; border-top:1px solid var(--border); padding-top:1rem; min-width:0; overflow-wrap:anywhere; }
+.account-settings h3 { margin-top:1.1rem; font-size:1rem; }
+.account-settings p { margin:.5rem 0; }
+.account-settings a { text-decoration:underline; }
+@media(max-width:520px){ .account-strip { padding:.75rem; } .account-strip > div:first-child { flex-basis:100%; } .account-strip > .button { flex:1 1 auto; min-width:0; } .account-form-wrap .account-form { padding:1rem; } }

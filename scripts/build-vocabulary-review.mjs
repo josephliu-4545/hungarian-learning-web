@@ -2,7 +2,7 @@ import { mkdir, writeFile } from 'node:fs/promises'
 import { createServer } from 'vite'
 
 const server = await createServer({ server: { middlewareMode: true }, appType: 'custom', logLevel: 'error' })
-const { MODULES, VOCABULARY } = await server.ssrLoadModule('/src/data/curriculum.ts')
+const { MODULES, VOCABULARY, HELD_VOCABULARY_IDS } = await server.ssrLoadModule('/src/data/curriculum.ts')
 await server.close()
 
 const moduleNames = new Map(MODULES.map((module) => [module.id, module.title]))
@@ -48,7 +48,7 @@ const rows = VOCABULARY.map((item) => {
   const isNew = !originalIds.has(item.id)
   const duplicateIds = normalizedForms.get(item.hungarian.normalize('NFC').trim().toLocaleLowerCase('hu-HU'))
   const duplicateNote = duplicateIds.length > 1 ? ` Potential duplicate form across modules: ${duplicateIds.join(', ')}.` : ''
-  const problem = (concerns[item.id] ?? (isNew ? 'New source transcription; requires character-by-character human verification.' : 'Existing provisional entry; requires final human verification.')) + duplicateNote
+  const problem = (HELD_VOCABULARY_IDS.has(item.id) ? 'Held from practice; resolve source evidence or annotation. ' : '') + (concerns[item.id] ?? (isNew ? 'New source transcription; requires character-by-character human verification.' : 'Existing provisional entry; requires final human verification.')) + duplicateNote
   const suggestion = suggestions[item.id] ?? (crossedOut.has(item.id) ? 'Reviewer must interpret the red X and explicitly approve or reject this entry.' : 'Compare with the cited page and approve, correct, or reject explicitly.')
   return [item.id, moduleNames.get(item.moduleId), item.hungarian, item.english, item.sourcePages.join(';'), `provisional / verified=${item.verified}`, problem, suggestion, item.id === 'unreviewed-example' ? 'rejected' : 'pending']
 })

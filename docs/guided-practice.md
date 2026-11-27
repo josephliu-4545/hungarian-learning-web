@@ -1,0 +1,9 @@
+# Guided practice preview
+
+This release adds a fifth tab, Practice, visible only with the development preview query parameter. Six modules have targeted activities: everyday conversation, introductions, country/adjective/origin forms, language suffixes and articles, clock reading, time suffixes, consultation verb conjugation, equipment plurals, room existence questions, directions, specialist matching and formal patient introductions. Reference tables show country forms and equipment plurals. Exercises are normalized/authored from the prior curriculum audit, not claimed to be verbatim PDF content. Fictional scenarios contain no personal contact data.
+
+Rounds sample up to ten questions. Typed answers require Hungarian accents, ignore case and trailing sentence punctuation, and accept explicitly listed alternatives. Digital times accept one- or two-digit hours. Clock diagrams appear after answering, so they do not reveal the answer in advance. Some dialogue prompts use English cues; this is guided practice rather than free-form speaking assessment. Replay available vocabulary audio after answering using the shared voice preference. Scores and mistake retries are session-only and do not alter vocabulary mastery or backup format.
+
+The 415-entry preview excludes nine held/rejected IDs; all 424 records retain stable IDs. Production still excludes unapproved vocabulary, and the Practice tab is preview-only until the exercise content is reviewed. The previous 198-row language audit is a historical snapshot; regenerate the review CSV locally via npm run qa:vocabulary for the expanded review queue. Native-speaker validation and audio rights review are pending.
+
+Run npm test, npm run lint, npm run build. Generate missing Piper clips with the existing Python script; unchanged clips remain cached. Restart Vite, open /?preview=1, select a module and Practice. Verify answer checking, alternate spellings, missed-question retries and mobile layout.

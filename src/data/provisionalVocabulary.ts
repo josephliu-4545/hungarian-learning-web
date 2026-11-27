@@ -39,7 +39,7 @@ export const PROVISIONAL_VOCABULARY: VocabularyItem[] = [
   entry('introductions-apolo', 'introductions', 'ápoló', 'nurse', [4, 5]),
   entry('introductions-nover', 'introductions', 'nővér', 'female nurse', [4]),
   entry('introductions-vedono', 'introductions', 'védőnő', 'health visitor', [4]),
-  entry('introductions-mentos', 'introductions', 'mentős', 'paramedic', [4]),
+  entry('introductions-mentos', 'introductions', 'mentős', 'ambulance worker / ambulance crew member', [4]),
   entry('introductions-dietetikus', 'introductions', 'dietetikus', 'dietitian', [4]),
   entry('introductions-optometrista', 'introductions', 'optometrista', 'optometrist', [4]),
   entry('introductions-gyogytornasz', 'introductions', 'gyógytornász', 'physiotherapist', [4]),
@@ -97,8 +97,8 @@ export const PROVISIONAL_VOCABULARY: VocabularyItem[] = [
 
   // Hospital room and equipment - page 12.
   ...([
-    ['hospital-objects-korterem', 'kórterem', 'patient room / ward'], ['hospital-objects-fonendoszkop', 'fonendoszkóp', 'phonendoscope'],
-    ['hospital-objects-gumikesztyu', 'gumikesztyű', 'gloves'], ['hospital-objects-gyogyszeres-kocsi', 'gyógyszeres kocsi', 'medicine trolley'],
+    ['hospital-objects-korterem', 'kórterem', 'patient room / hospital ward room'], ['hospital-objects-fonendoszkop', 'fonendoszkóp', 'phonendoscope'],
+    ['hospital-objects-gumikesztyu', 'gumikesztyű', 'rubber glove'], ['hospital-objects-gyogyszeres-kocsi', 'gyógyszeres kocsi', 'medicine trolley'],
     ['hospital-objects-homero', 'hőmérő', 'thermometer'], ['hospital-objects-lazmero', 'lázmérő', 'thermometer'],
     ['hospital-objects-vesetal', 'vesetál', 'emesis basin'], ['hospital-objects-vernyomasmero', 'vérnyomásmérő', 'blood pressure monitor'],
     ['hospital-objects-injekcio', 'injekció', 'injection'], ['hospital-objects-ampulla', 'ampulla', 'ampoule'],
@@ -107,12 +107,12 @@ export const PROVISIONAL_VOCABULARY: VocabularyItem[] = [
     ['hospital-objects-vervetel', 'vérvétel', 'blood draw'], ['hospital-objects-erelszorito', 'érelszorító', 'tourniquet'],
     ['hospital-objects-kemcso', 'kémcső', 'test tube'], ['hospital-objects-ragtapasz', 'ragtapasz', 'adhesive tape'],
     ['hospital-objects-kuka', 'kuka', 'bin'], ['hospital-objects-infuzio', 'infúzió', 'infusion'],
-    ['hospital-objects-branul', 'branül', 'cannula'], ['hospital-objects-kanul', 'kanül', 'cannula'],
+    ['hospital-objects-branul', 'branül', 'peripheral IV cannula'], ['hospital-objects-kanul', 'kanül', 'cannula'],
     ['hospital-objects-infuzios-allvany', 'infúziós állvány', 'infusion stand'], ['hospital-objects-infuzios-szerelek', 'infúziós szerelék', 'infusion set'],
     ['hospital-objects-kotozes', 'kötözés', 'bandaging / wound dressing'], ['hospital-objects-kotozo-kocsi', 'kötöző kocsi', 'dressing trolley'],
     ['hospital-objects-kotszer', 'kötszer', 'dressing material'], ['hospital-objects-gez', 'géz', 'gauze'],
     ['hospital-objects-kenocs', 'kenőcs', 'ointment'], ['hospital-objects-csipesz', 'csipesz', 'tweezers'],
-    ['hospital-objects-sebhintopor', 'sebhintőpor', 'dressing powder'], ['hospital-objects-ollo', 'olló', 'scissors'],
+    ['hospital-objects-sebhintopor', 'sebhintőpor', 'wound powder / wound dusting powder'], ['hospital-objects-ollo', 'olló', 'scissors'],
   ] as const).map(([id, hu, en]) => entry(id, 'hospital-objects', hu, en, [12])),
 
   // Hospital departments and locations - page 16. Marked rows remain provisional for reviewer attention.
@@ -123,7 +123,7 @@ export const PROVISIONAL_VOCABULARY: VocabularyItem[] = [
     ['departments-pulmonologia', 'pulmonológia', 'pulmonology'], ['departments-reumatologia', 'reumatológia', 'rheumatology'],
     ['departments-neurologia', 'neurológia', 'neurology'], ['departments-onkologia', 'onkológia', 'oncology'],
     ['departments-pszichiatria', 'pszichiátria', 'psychiatry'], ['departments-ortopedia', 'ortopédia', 'orthopedics'],
-    ['departments-gyogytorna', 'gyógytorna', 'physiotherapy'], ['departments-apolas', 'ápolás', 'inpatient care'],
+    ['departments-gyogytorna', 'gyógytorna', 'physiotherapy'], ['departments-apolas', 'ápolás', 'nursing / nursing care'],
     ['departments-intenziv', 'intenzív', 'intensive care'], ['departments-gyermekosztaly', 'gyermekosztály', 'pediatrics'],
     ['departments-borgyogyaszat', 'bőrgyógyászat', 'dermatology'], ['departments-fertozo-osztaly', 'fertőző osztály', 'infectious diseases'],
     ['departments-kozponti-mutok', 'központi műtők', 'central operating rooms'], ['departments-kozponti-labor', 'központi labor', 'central laboratory'],
@@ -133,7 +133,7 @@ export const PROVISIONAL_VOCABULARY: VocabularyItem[] = [
     ['departments-gyogyszeresz', 'gyógyszerész', 'pharmacist'],
     ['departments-kapolna', 'kápolna', 'chapel'], ['departments-halottashaz', 'halottasház', 'mortuary'],
     ['departments-betegfelvetel', 'betegfelvétel', 'patient admission'], ['departments-informacios-pult', 'információs pult', 'information point'],
-    ['departments-ujsagos', 'újságos', 'kiosk'], ['departments-bufe', 'büfé', 'buffet'],
+    ['departments-ujsagos', 'újságos', 'newspaper kiosk / newsstand'], ['departments-bufe', 'büfé', 'snack bar / cafeteria'],
     ['departments-bejarat', 'bejárat', 'entrance'], ['departments-kijarat', 'kijárat', 'exit'],
     ['departments-emelet', 'emelet', 'floor'],
   ] as const).map(([id, hu, en]) => entry(id, 'departments', hu, en, [16])),
