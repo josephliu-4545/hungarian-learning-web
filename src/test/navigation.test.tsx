@@ -11,6 +11,6 @@ it('navigates among Dashboard, Learn, and Progress', async () => {
   expect(screen.getByRole('heading', { name: /choose a module/i })).toBeInTheDocument()
   expect(screen.getAllByRole('button', { name: 'Learn' })[0]).toHaveAttribute('aria-current', 'page')
   await userEvent.click(screen.getAllByRole('button', { name: 'Progress' })[0])
-  expect(screen.getByRole('heading', { name: /your progress/i })).toBeInTheDocument()
+  expect(screen.getByRole('heading', { name: /your learning, at a glance/i })).toBeInTheDocument()
 })
 
