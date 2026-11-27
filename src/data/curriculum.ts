@@ -1,10 +1,11 @@
 import type { LearningModule, VocabularyItem } from '../types'
 import { PROVISIONAL_VOCABULARY } from './provisionalVocabulary'
+import { EXPANDED_VOCABULARY } from './expandedVocabulary'
 
 export const MODULES: LearningModule[] = [
   { id: 'greetings', title: 'Greetings & Everyday Expressions', description: 'Essential greetings and polite phrases', sourcePages: [2, 3], icon: '👋' },
   { id: 'introductions', title: 'Introductions & Personal Information', description: 'Names, nationalities, and occupations', sourcePages: [3, 4, 5, 6], icon: '💬' },
-  { id: 'numbers-time', title: 'Numbers & Time', description: 'Numbers, clocks, and telling time', sourcePages: [7, 8, 9, 10], icon: '🕐' },
+  { id: 'numbers-time', title: 'Numbers & Time', description: 'Numbers, clocks, and telling time', sourcePages: [7, 8, 9, 10, 11], icon: '🕐' },
   { id: 'appointments', title: 'Medical Appointments', description: 'Appointments and medical specialists', sourcePages: [11], icon: '📅' },
   { id: 'hospital-objects', title: 'In the Hospital', description: 'Objects, equipment, and locations', sourcePages: [12, 13, 14, 15], icon: '🏥' },
   { id: 'departments', title: 'Hospital Departments', description: 'Departments and services', sourcePages: [16, 17], icon: '✚' },
@@ -30,7 +31,13 @@ export const VOCABULARY: VocabularyItem[] = [
   { id: 'departments-gyogyszertar', moduleId: 'departments', hungarian: 'gyógyszertár', english: 'pharmacy', kind: 'word', sourcePages: [17], verified: false },
   { id: 'unreviewed-example', moduleId: 'departments', hungarian: 'ellenőrizetlen', english: 'unreviewed', kind: 'word', sourcePages: [16], verified: false },
   ...PROVISIONAL_VOCABULARY,
+  ...EXPANDED_VOCABULARY,
 ]
 
-export const VERIFIED_VOCABULARY = VOCABULARY.filter((item) => item.verified)
 
+
+// Unresolved source evidence and red-X annotations remain in the audit, not in ordinary practice.
+export const HELD_VOCABULARY_IDS = new Set(['unreviewed-example', 'introductions-diak', 'appointments-idopont', 'hospital-objects-agy', 'departments-gyogyszertar', 'departments-gyogytorna', 'departments-intenziv', 'departments-gyermekosztaly', 'departments-fertozo-osztaly'])
+export const PREVIEW_VOCABULARY = VOCABULARY.filter((item) => !HELD_VOCABULARY_IDS.has(item.id))
+
+export const VERIFIED_VOCABULARY = PREVIEW_VOCABULARY.filter((item) => item.verified)
