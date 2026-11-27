@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Activity, BarChart3, BookOpen, Building2, CalendarDays, Check, ChevronLeft, ChevronRight, Clock3, Download, Flag, Headphones, Home, Languages, MessageCircle, RotateCcw, Sparkles, SpellCheck, Stethoscope, Upload, Volume2 } from 'lucide-react'
-import { MODULES, VERIFIED_VOCABULARY, VOCABULARY } from './data/curriculum'
+import { MODULES, VERIFIED_VOCABULARY, PREVIEW_VOCABULARY } from './data/curriculum'
 import { exportProgress, parseBackup } from './domain/backup'
 import { createEmptyProgress, getWordStatus, percentage, recordAssessment, recordCardOpen } from './domain/progress'
 import { getCharacterDiff, isSpellingCorrect } from './domain/spelling'
@@ -8,9 +8,11 @@ import { useProgress } from './hooks/useProgress'
 import { buildSession } from './domain/studySession'
 import { playHungarian, stopHungarian, type PlaybackStatus } from './domain/hungarianAudio'
 import type { PiperVoiceId } from './data/audioManifest'
+import { Practice } from './components/Practice'
 import type { AppProgress, AssessedMode, LearningModule, ModuleId, StudyMode, VocabularyItem } from './types'
 
 type Section = 'dashboard' | 'learn' | 'progress'
+type LearningTab = StudyMode | 'practice'
 const nav = [{ id: 'dashboard' as const, label: 'Dashboard', icon: Home }, { id: 'learn' as const, label: 'Learn', icon: BookOpen }, { id: 'progress' as const, label: 'Progress', icon: BarChart3 }]
 const moduleVisuals = {
   greetings: { icon: MessageCircle, tone: 'sage' }, introductions: { icon: Languages, tone: 'lavender' },
@@ -18,11 +20,11 @@ const moduleVisuals = {
   'hospital-objects': { icon: Stethoscope, tone: 'mist' }, departments: { icon: Building2, tone: 'clay' },
 } as const
 const isPreview = import.meta.env.DEV && typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('preview')
-const activeVocabulary = isPreview ? VOCABULARY.filter((item) => item.id !== 'unreviewed-example') : VERIFIED_VOCABULARY
+const activeVocabulary = isPreview ? PREVIEW_VOCABULARY : VERIFIED_VOCABULARY
 const itemsFor = (id: ModuleId) => activeVocabulary.filter((item) => item.moduleId === id)
 
 export default function App() {
-  const [section, setSection] = useState<Section>('dashboard'), [selectedModule, setSelectedModule] = useState<ModuleId | null>(null), [mode, setMode] = useState<StudyMode>('flashcards')
+  const [section, setSection] = useState<Section>('dashboard'), [selectedModule, setSelectedModule] = useState<ModuleId | null>(null), [mode, setMode] = useState<LearningTab>('flashcards')
   const [progress, setProgress] = useProgress(isPreview)
   const [voice, setVoice] = useState<PiperVoiceId>('anna')
   const choose = (id: ModuleId) => { setSelectedModule(id); setMode('flashcards'); setSection('learn'); setProgress((current) => ({ ...current, lastModuleId: id, updatedAt: new Date().toISOString() })) }
@@ -50,11 +52,11 @@ function ModuleCard({ module, progress, choose }: { module: LearningModule; prog
   return <button onClick={() => choose(module.id)} className={`module-card module-${visual.tone}`}><span className="module-icon"><Icon size={22}/></span><span className="module-copy"><strong>{module.title}</strong><small>{module.description}</small></span><span className="module-meta">{words.length ? `${words.length} ${isPreview ? 'preview' : 'approved'} words` : 'Awaiting review'}</span><span className="progress-track" aria-hidden="true"><span style={{ width: `${pct ?? 0}%` }}/></span><span className="module-foot">{pct === null ? 'Not available yet' : `${pct}% mastered`}<ChevronRight size={16}/></span></button>
 }
 
-function Learn({ progress, setProgress, selected, setSelected, mode, setMode, voice, setVoice }: { progress: AppProgress; setProgress: React.Dispatch<React.SetStateAction<AppProgress>>; selected: ModuleId | null; setSelected: (id: ModuleId | null) => void; mode: StudyMode; setMode: (mode: StudyMode) => void; voice: PiperVoiceId; setVoice: (voice: PiperVoiceId) => void }) {
-  const pick = (id: ModuleId) => { setSelected(id); setProgress((current) => ({ ...current, lastModuleId: id, updatedAt: new Date().toISOString() })) }
+function Learn({ progress, setProgress, selected, setSelected, mode, setMode, voice, setVoice }: { progress: AppProgress; setProgress: React.Dispatch<React.SetStateAction<AppProgress>>; selected: ModuleId | null; setSelected: (id: ModuleId | null) => void; mode: LearningTab; setMode: (mode: LearningTab) => void; voice: PiperVoiceId; setVoice: (voice: PiperVoiceId) => void }) {
+  const pick = (id: ModuleId) => { setSelected(id); setMode('flashcards'); setProgress((current) => ({ ...current, lastModuleId: id, updatedAt: new Date().toISOString() })) }
   if (!selected) return <div className="page-stack"><header className="page-heading"><span className="eyebrow">Learn</span><h1>Choose a module</h1><p>Pick one clear topic for your next study session.</p></header><div className="module-grid learn-grid">{MODULES.map((module) => <ModuleCard key={module.id} module={module} progress={progress} choose={pick}/>)}</div></div>
   const module = MODULES.find((candidate) => candidate.id === selected)!, words = itemsFor(selected), Icon = moduleVisuals[selected].icon
-  return <div className="learn-shell"><button className="text-button" onClick={() => setSelected(null)}><ChevronLeft size={17}/>All modules</button><header className="learn-heading"><span className={`module-icon module-${moduleVisuals[selected].tone}`}><Icon size={21}/></span><div><span className="eyebrow">Study session</span><h1>{module.title}</h1><p>{module.description}</p></div></header><div className="mode-tabs" role="tablist" aria-label="Study mode">{(['flashcards', 'listening', 'spelling', 'quiz'] as StudyMode[]).map((tab) => <button role="tab" aria-selected={mode === tab} key={tab} onClick={() => setMode(tab)}>{tab}</button>)}</div><Study key={`${selected}-${mode}`} mode={mode} words={words} setProgress={setProgress} moduleId={selected} voice={voice} setVoice={setVoice}/></div>
+  return <div className="learn-shell"><button className="text-button" onClick={() => setSelected(null)}><ChevronLeft size={17}/>All modules</button><header className="learn-heading"><span className={`module-icon module-${moduleVisuals[selected].tone}`}><Icon size={21}/></span><div><span className="eyebrow">Study session</span><h1>{module.title}</h1><p>{module.description}</p></div></header><div className="mode-tabs" role="tablist" aria-label="Study mode">{(['flashcards', 'listening', 'spelling', 'quiz', ...(isPreview ? ['practice'] : [])] as LearningTab[]).map((tab) => <button role="tab" aria-selected={mode === tab} key={tab} onClick={() => setMode(tab)}>{tab}</button>)}</div>{mode === 'practice' ? (isPreview && <Practice key={selected} moduleId={selected} voice={voice} setVoice={setVoice}/>) : <Study key={`${selected}-${mode}`} mode={mode} words={words} setProgress={setProgress} moduleId={selected} voice={voice} setVoice={setVoice}/>}</div>
 }
 
 function Study({ mode, words: sourceWords, setProgress, moduleId, voice, setVoice }: { mode: StudyMode; words: VocabularyItem[]; setProgress: React.Dispatch<React.SetStateAction<AppProgress>>; moduleId: ModuleId; voice: PiperVoiceId; setVoice: (voice: PiperVoiceId) => void }) {
