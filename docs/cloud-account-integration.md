@@ -1,0 +1,16 @@
+# Cloud account integration foundation
+
+Google OAuth is configured externally and in production mode according to the operator's dashboard. Actual login has not yet been tested. The live guest site remains unchanged.
+
+The database is public.learning_progress with a user_id primary key referencing auth.users, progress JSONB (schemaVersion 1), preferred_voice, revision and updated_at. RLS restricts authenticated reads, inserts and updates to the owner; anonymous users have no grants. An update trigger increments revision. The original database migration has been applied in the hosted project. Do not run destructive schema resets.
+
+## Integration sequence
+
+1. Install the official Supabase JS SDK with an exact version and commit package.json and package-lock.json. Never commit secret or service_role keys. Use the project's URL and publishable key in Vite config. Keep environment-specific values in ignored local env files.
+2. Add auth session handling, Google OAuth, email/password sign-up and recovery, and user-facing account controls. Use only OpenID/email/profile scopes. The redirect target is the app root on an allowlisted origin. Email verification and recovery require production SMTP configuration before public email onboarding.
+3. Keep guest progress separate. Load the account-specific cache only for its authenticated user; on a first login with an existing guest record explicitly ask whether to import it, never silently send another person's guest data. For an account with no prior cloud data and no guest import, start with an empty learning snapshot. For an existing cloud record without a local baseline, download it if the user has no account-specific pending edits.
+4. Use cloudSync.ts for revision-aware synchronization. Read remote state, compare local and last acknowledged cloud snapshot. For updates, filter by both user_id and expected revision and request the updated row; if no row is returned or insertion races, refetch and replan. Never perform an unconditional overwrite. Save the acknowledged baseline separately. On divergent changes, retain both snapshots and require explicit conflict resolution with export before replacement. This first iteration does not silently merge counters or resets. Retry only boundedly; preserve local pending edits after network errors.
+5. Account-specific caches must not fall back to guest data or another user on sign-out. Flush or warn about pending progress before logout, clear displayed account state, and handle asynchronous responses from stale sessions. Use user ID ownership, not editable profile metadata. Sync on initial login, online/focus, and debounced learning changes. Local cache is not a guarantee of offline access to uncached static assets.
+6. Test sign-in, logout, account switching, two devices, offline edits, concurrent changes, guest migration and RLS with two separate users. Review privacy contact, retention, account deletion, and SMTP before enabling public student accounts. Practice scores are currently session-only; persistent practice history is a later feature requiring its own schema decisions.
+
+The pure synchronization planner is implemented and unit tests are included. No client SDK, session handling, live network synchronization or login interface is wired in this commit.
