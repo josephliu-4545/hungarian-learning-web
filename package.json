@@ -9,7 +9,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "eslint .",
-    "qa:vocabulary": "node scripts/build-vocabulary-review.mjs"
+    "qa:vocabulary": "node scripts/build-vocabulary-review.mjs",
+    "build:beta": "node scripts/build-beta.mjs",
+    "preview:beta": "vite preview --mode beta --outDir dist-beta --host 127.0.0.1 --port 4173 --strictPort"
   },
   "dependencies": {
     "@vitejs/plugin-react": "latest",
@@ -38,4 +40,3 @@
     "vitest": "latest"
   }
 }
-

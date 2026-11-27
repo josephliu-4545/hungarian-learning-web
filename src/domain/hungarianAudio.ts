@@ -1,5 +1,10 @@
 import type { VocabularyItem } from '../types'
 import { approvedPath, type PiperVoiceId } from '../data/audioManifest'
+import { isBeta } from './releaseMode'
+
+export function betaAudioPath(id: string, voice: PiperVoiceId): string | undefined {
+  return /^[a-z0-9-]+$/.test(id) && (voice === 'anna' || voice === 'imre') ? `audio-beta/${voice}/${id}.wav` : undefined
+}
 
 export type PlaybackStatus = 'idle' | 'loading' | 'playing' | 'played' | 'unavailable'
 
@@ -51,16 +56,16 @@ export function playHungarian(item: VocabularyItem, rate: number, onStatus: (sta
     synth.addEventListener('voiceschanged', retry)
   }
   const previewPath = import.meta.env.DEV && preview ? `__piper_preview/${voice}/${encodeURIComponent(item.id)}.wav?text=${encodeURIComponent(item.hungarian)}` : undefined
-  const path = previewPath ?? (item.verified ? approvedPath(item.id, item.hungarian, voice) : undefined)
+  const path = previewPath ?? (isBeta ? betaAudioPath(item.id, voice) : item.verified ? approvedPath(item.id, item.hungarian, voice) : undefined)
   if (path) {
     const audio = new Audio(import.meta.env.BASE_URL + path)
     activeAudio = audio
     audio.playbackRate = rate
     let failed = false
-    const recover = () => { if (!current() || failed) return; failed = true; audio.pause(); activeAudio = undefined; fallback() }
+    const recover = () => { if (!current() || failed) return; failed = true; audio.pause(); activeAudio = undefined; if (isBeta) onStatus('unavailable'); else fallback() }
     audio.addEventListener('playing', () => { if (current() && !failed) onStatus('playing') })
     audio.addEventListener('ended', () => { if (current() && !failed) onStatus('played') })
     audio.addEventListener('error', recover, { once: true })
     try { audio.play().catch(recover) } catch { recover() }
-  } else fallback()
+  } else if (isBeta) onStatus('unavailable'); else fallback()
 }

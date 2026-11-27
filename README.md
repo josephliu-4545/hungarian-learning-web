@@ -61,3 +61,6 @@ Run `npm run build` and publish the generated `dist/` directory to any static ho
 
 The six module definitions map to pages 2–17 of `Magyar.pdf`. The original scan is not copied into this repository or shown in the app. Final vocabulary counts must always be derived from the verified entries rather than estimates.
 
+## Working static beta
+
+See [static beta release instructions](docs/static-beta-release.md) for the full local build with both Hungarian voices and all learning activities. The standard build remains reviewed-only.

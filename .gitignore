@@ -10,3 +10,4 @@ dist/
 .piper-venv/
 .piper-work/
 __pycache__/
+dist-beta/
