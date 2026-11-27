@@ -5,3 +5,7 @@ dist/
 !.env.example
 *.local
 .superpowers
+
+# Local Piper models, virtual environment, and unapproved audio
+.piper-venv/
+.piper-work/
