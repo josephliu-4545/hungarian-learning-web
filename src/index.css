@@ -197,3 +197,8 @@ h2 { margin-bottom: .45rem; font-size: clamp(1.35rem, 2.2vw, 1.75rem); font-weig
 
 /* Keep additional study controls comfortably wrapped on narrow displays. */
 .study-controls { flex-wrap: wrap; }
+
+.voice-control { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: .5rem .75rem; margin: .75rem auto; color: var(--text, #29352e); font-size: .875rem; }
+.voice-control select { font: inherit; color: #29352e; border: 1px solid #b7c3b8; border-radius: .65rem; padding: .5rem .75rem; background: #fffdf9; }
+.voice-control select:focus-visible { outline: 2px solid #42634e; outline-offset: 2px; }
+.voice-control small { flex-basis: 100%; text-align: center; color: #53635a; }

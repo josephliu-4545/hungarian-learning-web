@@ -27,3 +27,16 @@ Sources:
 - https://huggingface.co/rhasspy/piper-voices/blob/main/hu/hu_HU/imre/medium/MODEL_CARD
 
 After a voice and curriculum entries are approved, generate recordings for the exact approved Hungarian text, validate each clip, and add the approved assets and manifest entries to the existing static audio playback architecture. WAV is supported by browsers; MP3 is optional for smaller downloads. Do not mark vocabulary as verified merely because audio exists.
+
+## Both voices in the local learning preview
+
+With the existing Piper virtual environment and models installed, run from the project root:
+
+```powershell
+.\.piper-venv\Scripts\python.exe scripts\generate-piper-curriculum.py
+npm run dev
+```
+
+The script reads the current TypeScript curriculum via Vite, excludes the rejected placeholder, generates both voices and caches unchanged files. With the current 197 eligible provisional entries this is 394 clips. Open http://localhost:5173/?preview=1 and choose Anna or Imre on flashcards, listening or spelling. The choice is shared during the current app session. Files remain in the ignored .piper-work/curriculum-preview folder. A Vite development-only endpoint checks the exact text and voice before serving local WAV files, and is not registered for production builds. Do not expose the development server publicly.
+
+Production remains gated: only reviewed static assets with a matching approved vocabulary entry can play. Add recordings per vocabulary ID and voice in audioManifest.ts after approval. No provisional recordings are copied into public/ or the production build.

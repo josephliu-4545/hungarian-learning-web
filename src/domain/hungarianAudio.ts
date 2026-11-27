@@ -1,5 +1,5 @@
 import type { VocabularyItem } from '../types'
-import { approvedAudio } from '../data/audioManifest'
+import { approvedPath, type PiperVoiceId } from '../data/audioManifest'
 
 export type PlaybackStatus = 'idle' | 'loading' | 'playing' | 'played' | 'unavailable'
 
@@ -20,7 +20,7 @@ export function stopHungarian() {
   if (typeof window !== 'undefined' && 'speechSynthesis' in window) window.speechSynthesis.cancel()
 }
 
-export function playHungarian(item: VocabularyItem, rate: number, onStatus: (status: PlaybackStatus) => void) {
+export function playHungarian(item: VocabularyItem, rate: number, onStatus: (status: PlaybackStatus) => void, voice: PiperVoiceId = 'anna', preview = false) {
   stopHungarian()
   const token = generation
   const current = () => token === generation
@@ -50,9 +50,10 @@ export function playHungarian(item: VocabularyItem, rate: number, onStatus: (sta
     cancelVoiceWait = clear
     synth.addEventListener('voiceschanged', retry)
   }
-  const recording = approvedAudio[item.id]
-  if (recording && recording.text.normalize('NFC') === item.hungarian.normalize('NFC')) {
-    const audio = new Audio(import.meta.env.BASE_URL + recording.path)
+  const previewPath = import.meta.env.DEV && preview ? `__piper_preview/${voice}/${encodeURIComponent(item.id)}.wav?text=${encodeURIComponent(item.hungarian)}` : undefined
+  const path = previewPath ?? (item.verified ? approvedPath(item.id, item.hungarian, voice) : undefined)
+  if (path) {
+    const audio = new Audio(import.meta.env.BASE_URL + path)
     activeAudio = audio
     audio.playbackRate = rate
     let failed = false
