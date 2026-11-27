@@ -1,5 +1,5 @@
-import { act, renderHook, waitFor } from '@testing-library/react'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { act, cleanup, renderHook, waitFor } from '@testing-library/react'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { useCloudProgress } from '../hooks/useCloudProgress'
 import { readCloud, writeCloud } from '../domain/cloudRemote'
@@ -11,7 +11,10 @@ vi.mock('../domain/cloudRemote',()=>({readCloud:vi.fn(),writeCloud:vi.fn()}))
 const client={} as SupabaseClient
 const user='00000000-0000-4000-8000-000000000001'
 const baseline=():CloudSnapshot=>({progress:createEmptyProgress(),voice:'anna',revision:1})
-beforeEach(()=>{localStorage.clear();vi.resetAllMocks()})
+// Vitest does not expose global afterEach in this project. Explicitly unmount
+// hooks so polling and focus listeners cannot affect the next test's cache.
+afterEach(()=>cleanup())
+beforeEach(()=>{cleanup();localStorage.clear();vi.resetAllMocks()})
 describe('cloud sync integration with simulated network',()=>{
   it('preserves edits after a failed write and retries using the observed revision',async()=>{
     const base=baseline()
@@ -28,17 +31,22 @@ describe('cloud sync integration with simulated network',()=>{
     expect(readAccountCache(user)?.base?.revision).toBe(2)
   })
   it('stops writing when another device has divergent progress',async()=>{
+    const user='00000000-0000-4000-8000-000000000002'
     const base=baseline()
     vi.mocked(readCloud).mockResolvedValue(base)
     const {result}=renderHook(()=>useCloudProgress(client,user))
     await waitFor(()=>expect(result.current.status).toBe('saved'))
     act(()=>result.current.setProgress(p=>recordAssessment(p,'greetings-jo-reggelt','quiz',true)))
+    expect(result.current.snapshot?.progress.words['greetings-jo-reggelt']).toBeDefined()
+    expect(readAccountCache(user)?.local.progress.words['greetings-jo-reggelt']).toBeDefined()
     const remote={...base,progress:recordAssessment(base.progress,'greetings-jo-napot','quiz',true),revision:2}
     vi.mocked(readCloud).mockResolvedValue(remote)
     act(()=>window.dispatchEvent(new Event('focus')))
     await waitFor(()=>expect(result.current.status).toBe('conflict'),{timeout:3000})
     expect(vi.mocked(writeCloud)).not.toHaveBeenCalled()
     expect(result.current.conflict).toEqual(remote)
+    expect(result.current.snapshot?.progress.words['greetings-jo-reggelt']).toBeDefined()
+    expect(readAccountCache(user)?.base?.revision).toBe(1)
     expect(readAccountCache(user)?.local.progress.words['greetings-jo-reggelt']).toBeDefined()
   })
 })
