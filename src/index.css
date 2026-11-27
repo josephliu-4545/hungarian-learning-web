@@ -202,3 +202,15 @@ h2 { margin-bottom: .45rem; font-size: clamp(1.35rem, 2.2vw, 1.75rem); font-weig
 .voice-control select { font: inherit; color: #29352e; border: 1px solid #b7c3b8; border-radius: .65rem; padding: .5rem .75rem; background: #fffdf9; }
 .voice-control select:focus-visible { outline: 2px solid #42634e; outline-offset: 2px; }
 .voice-control small { flex-basis: 100%; text-align: center; color: #53635a; }
+
+/* Prioritize the card and its controls over settings on short screens. */
+.flashcard-stage .voice-control { margin: .6rem auto 0; }
+.flashcard > strong { overflow-wrap: anywhere; max-width: 100%; }
+@media (max-height: 850px) {
+  .learn-shell .text-button { margin-bottom: .65rem; }
+  .learn-heading { margin-bottom: .85rem; }
+  .mode-tabs { margin-bottom: .85rem; }
+  .flashcard { min-height: clamp(12rem, 36vh, 19rem); padding: 2rem 1.25rem 1.25rem; }
+  .flashcard > strong { font-size: clamp(1.75rem, 5vw, 3.25rem); margin: .8rem 0; }
+  .learn-shell .study-controls { margin-top: .65rem; }
+}
