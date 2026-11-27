@@ -282,3 +282,14 @@ h2 { margin-bottom: .45rem; font-size: clamp(1.35rem, 2.2vw, 1.75rem); font-weig
 
 .site-footer { width: min(1120px, calc(100% - 2rem)); margin: 0 auto; padding: 0 0 1.5rem; display:flex; flex-wrap:wrap; justify-content:center; gap:.5rem 1rem; color:var(--text-soft); font-size:.78rem; text-align:center; }
 .site-footer a { color:var(--primary); text-decoration:underline; text-underline-offset:.18em; }
+
+.account-strip { display:flex; flex-wrap:wrap; align-items:center; gap:.6rem; padding:.85rem 1rem; margin-bottom:1.25rem; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); }
+.account-strip > div:first-child { flex:1 1 12rem; min-width:0; overflow-wrap:anywhere; }
+.account-strip strong,.account-strip small { display:block; }
+.account-strip small { color:var(--text-soft); }
+.account-strip > .account-form,.account-strip > p { flex:1 1 100%; }
+.account-form { max-width:30rem; margin:1rem auto; }
+.account-form form { display:grid; gap:.7rem; margin:1rem 0; }
+.account-form label { display:grid; gap:.3rem; font-size:.9rem; }
+.account-form input { min-height:2.75rem; width:100%; padding:.6rem; border:1px solid var(--border); border-radius:.65rem; font-size:1rem; }
+.account-form a { color:var(--primary); text-decoration:underline; }
