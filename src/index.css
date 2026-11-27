@@ -293,3 +293,14 @@ h2 { margin-bottom: .45rem; font-size: clamp(1.35rem, 2.2vw, 1.75rem); font-weig
 .account-form label { display:grid; gap:.3rem; font-size:.9rem; }
 .account-form input { min-height:2.75rem; width:100%; padding:.6rem; border:1px solid var(--border); border-radius:.65rem; font-size:1rem; }
 .account-form a { color:var(--primary); text-decoration:underline; }
+
+.account-form-wrap { flex:1 1 100%; min-width:0; border-top:1px solid var(--border); margin-top:.45rem; }
+.account-form-wrap .account-form { width:min(100%, 27rem); margin:1.1rem auto .4rem; box-shadow:none; }
+.account-form h2 { margin-bottom:1rem; }
+.account-form .password-toggle { justify-self:end; min-height:2rem; margin:0; }
+.account-message { background:#edf3eb; color:#34513f; padding:.8rem; border-radius:.65rem; margin-top:1rem; }
+.account-settings { flex:1 1 100%; border-top:1px solid var(--border); padding-top:1rem; min-width:0; overflow-wrap:anywhere; }
+.account-settings h3 { margin-top:1.1rem; font-size:1rem; }
+.account-settings p { margin:.5rem 0; }
+.account-settings a { text-decoration:underline; }
+@media(max-width:520px){ .account-strip { padding:.75rem; } .account-strip > div:first-child { flex-basis:100%; } .account-strip > .button { flex:1 1 auto; min-width:0; } .account-form-wrap .account-form { padding:1rem; } }
